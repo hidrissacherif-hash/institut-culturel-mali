@@ -16,6 +16,26 @@
 <meta name="twitter:description" content="Contact the Institut Culturel du Mali (ICM) in Bamako, Mali.">
 <meta name="twitter:image" content="https://institutculturelmali.org/og-image.jpg">
 <link rel="stylesheet" href="../styles.css">
+<style>
+.contact-wrap{ max-width:1000px; margin:0 auto; display:flex; flex-wrap:wrap; gap:50px; }
+.contact-info{ flex:0 0 280px; font-family:'Helvetica Neue',Arial,sans-serif; }
+.contact-info .item{ margin-bottom:22px; font-size:14.5px; color:#3F362A; line-height:1.6; }
+.contact-info .item strong{ display:block; color:var(--gold); font-size:11px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px; }
+.contact-form{ flex:1; min-width:300px; }
+.contact-form label{ display:block; font-family:'Helvetica Neue',Arial,sans-serif; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); margin-bottom:6px; }
+.contact-form .row{ display:flex; gap:16px; flex-wrap:wrap; }
+.contact-form .row .field{ flex:1; min-width:200px; }
+.contact-form input, .contact-form select, .contact-form textarea{
+  width:100%; padding:11px 14px; margin-bottom:20px; border:1px solid var(--line); background:var(--cream);
+  font-family:'Helvetica Neue',Arial,sans-serif; font-size:14px; color:var(--ink); border-radius:2px; box-sizing:border-box;
+}
+.contact-form textarea{ min-height:120px; resize:vertical; }
+.contact-form button{ font-family:'Helvetica Neue',Arial,sans-serif; font-size:12.5px; letter-spacing:1.5px; text-transform:uppercase; padding:14px 32px; background:var(--gold); color:var(--ink); border:none; border-radius:2px; cursor:pointer; }
+.contact-form button:hover{ background:var(--gold-light); }
+.form-status{ margin-top:14px; font-family:'Helvetica Neue',Arial,sans-serif; font-size:13.5px; }
+.form-status.ok{ color:#2E5B3E; }
+.form-status.err{ color:#9C3B2E; }
+</style>
 </head>
 <body>
 
@@ -40,13 +60,82 @@
 </header>
 
 <div class="banner"><div class="kicker">Write to us</div><h1>Contact</h1></div>
+
 <section>
-  <div class="prose" style="text-align:center;">
-    <p><strong>Institut Culturel du Mali (ICM)</strong><br>Bamako — Mali</p>
-    <p>Email: <a href="mailto:sounkalotab1@gmail.com" style="color:var(--gold); border-bottom:1px solid var(--gold);">sounkalotab1@gmail.com</a><br>Phone: to be added</p>
-    <p style="margin-top:30px; font-size:14px; letter-spacing:1px; text-transform:uppercase; color:var(--gold);">Facebook · LinkedIn · YouTube · Instagram</p>
+  <div class="contact-wrap">
+    <div class="contact-info">
+      <div class="item"><strong>Institute</strong>Institut Culturel du Mali (ICM)<br>Bamako — Mali</div>
+      <div class="item"><strong>Email</strong><a href="mailto:sounkalotab1@gmail.com" style="color:var(--gold);">sounkalotab1@gmail.com</a></div>
+      <div class="item"><strong>Social</strong>Facebook · LinkedIn · YouTube · Instagram</div>
+    </div>
+    <div class="contact-form">
+      <form id="icm-contact-form">
+        <input type="hidden" name="access_key" value="WEB3FORMS_ACCESS_KEY">
+        <input type="hidden" name="subject" value="New message from institutculturelmali.org">
+        <div class="row">
+          <div class="field">
+            <label for="firstname">First name</label>
+            <input type="text" id="firstname" name="First name" required>
+          </div>
+          <div class="field">
+            <label for="lastname">Last name</label>
+            <input type="text" id="lastname" name="Last name" required>
+          </div>
+        </div>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+        <label for="topic">Subject</label>
+        <select id="topic" name="Subject" required>
+          <option value="">Select a subject</option>
+          <option value="Research">Research</option>
+          <option value="Partnership">Partnership</option>
+          <option value="Congress 2027">Congress 2027</option>
+          <option value="Press">Press</option>
+          <option value="Other">Other</option>
+        </select>
+        <label for="message">Message</label>
+        <textarea id="message" name="Message" required></textarea>
+        <button type="submit">Send</button>
+        <div id="form-status" class="form-status"></div>
+      </form>
+    </div>
   </div>
 </section>
+
+<script>
+document.getElementById('icm-contact-form').addEventListener('submit', function(e){
+  e.preventDefault();
+  const form = e.target;
+  const status = document.getElementById('form-status');
+  const btn = form.querySelector('button');
+  btn.disabled = true;
+  status.textContent = 'Sending...';
+  status.className = 'form-status';
+  const formData = new FormData(form);
+  fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: { 'Accept': 'application/json' },
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    btn.disabled = false;
+    if (data.success) {
+      status.textContent = 'Message sent. Thank you, we will respond shortly.';
+      status.className = 'form-status ok';
+      form.reset();
+    } else {
+      status.textContent = 'Something went wrong. Please try again or email sounkalotab1@gmail.com directly.';
+      status.className = 'form-status err';
+    }
+  })
+  .catch(() => {
+    btn.disabled = false;
+    status.textContent = 'Something went wrong. Please try again or email sounkalotab1@gmail.com directly.';
+    status.className = 'form-status err';
+  });
+});
+</script>
 
 
 <footer>
